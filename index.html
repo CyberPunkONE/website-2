@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HAPPY HOUR ($HAPPY) | The Ultimate Crypto Hangout</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --beer-gold: #FFC200;
+            --amber-glow: #FF8C00;
+            --foam-white: #FFFBE6;
+            --bar-dark: #1a0f00;
+            --neon-orange: #ff5e00;
+        }
+
+        body {
+            background-color: var(--bar-dark);
+            color: var(--foam-white);
+            font-family: 'Montserrat', sans-serif;
+            overflow-x: hidden;
+            cursor: default;
+        }
+
+        h1, h2, h3, .bar-font {
+            font-family: 'Bebas Neue', cursive;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* --- LIQUID GOLD BACKGROUND --- */
+        #beer-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            background: radial-gradient(circle at center, #3d2400 0%, #000000 100%);
+        }
+
+        .bubble-bg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        /* --- FROSTED GLASS CARDS --- */
+        .glass-card {
+            background: rgba(255, 194, 0, 0.1);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 2px solid rgba(255, 194, 0, 0.3);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(255, 194, 0, 0.1);
+            border-radius: 24px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 200%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.1),
+                transparent
+            );
+            transform: skewX(-25deg);
+            transition: 0.7s;
+        }
+
+        .glass-card:hover::before {
+            left: 100%;
+        }
+
+        .glass-card:hover {
+            border-color: var(--beer-gold);
+            box-shadow: 0 0 40px rgba(255, 194, 0, 0.3);
+            transform: translateY(-5px);
+        }
+
+        /* --- TYPOGRAPHY GLOWS --- */
+        .text-gold-glow {
+            color: var(--beer-gold);
+            text-shadow: 0 0 15px rgba(255, 194, 0, 0.6);
+        }
+        
+        .text-amber-glow {
+            color: var(--amber-glow);
+            text-shadow: 0 0 15px rgba(255, 140, 0, 0.6);
+        }
+
+        /* --- NEON SIGN EFFECT --- */
+        .neon-sign {
+            color: var(--foam-white);
+            text-shadow: 
+                0 0 5px var(--beer-gold),
+                0 0 10px var(--beer-gold),
+                0 0 20px var(--amber-glow),
+                0 0 40px var(--neon-orange),
+                0 0 80px var(--neon-orange);
+        }
+
+        /* --- BUTTONS --- */
+        .btn-pour {
+            background: transparent;
+            border: 3px solid var(--beer-gold);
+            color: var(--beer-gold);
+            font-family: 'Bebas Neue', cursive;
+            font-size: 1.5rem;
+            padding: 1rem 3rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s;
+            z-index: 1;
+        }
+
+        .btn-pour::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 0%;
+            background: linear-gradient(to top, var(--amber-glow), var(--beer-gold));
+            transition: all 0.4s ease-in-out;
+            z-index: -1;
+        }
+
+        .btn-pour:hover::after {
+            height: 100%;
+        }
+        
+        .btn-pour:hover {
+            color: var(--bar-dark);
+            box-shadow: 0 0 40px var(--amber-glow);
+            text-shadow: none;
+        }
+
+        /* --- ANIMATIONS --- */
+        .float-slow { animation: floatSlow 8s ease-in-out infinite; }
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(2deg); }
+        }
+
+        .pulse-glow { animation: pulseGlow 2s infinite alternate; }
+        @keyframes pulseGlow {
+            from { text-shadow: 0 0 10px var(--beer-gold); }
+            to { text-shadow: 0 0 30px var(--beer-gold), 0 0 40px var(--amber-glow); }
+        }
+
+        /* --- BEER TAP HERO --- */
+        .beer-tap-container {
+            position: relative;
+            cursor: pointer;
+        }
+        .beer-flow {
+            position: absolute;
+            top: 70%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 0;
+            background: linear-gradient(to bottom, var(--beer-gold), var(--amber-glow));
+            border-radius: 0 0 20px 20px;
+            opacity: 0.9;
+            box-shadow: 0 0 20px var(--beer-gold);
+            transition: height 0.5s ease-out;
+            z-index: -1;
+        }
+        .beer-tap-container:hover .beer-flow,
+        .beer-tap-container.active .beer-flow {
+            height: 200px;
+        }
+        .glass-fill {
+            position: absolute;
+            bottom: -180px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 140px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 4px solid rgba(255, 255, 255, 0.4);
+            border-top: none;
+            border-radius: 0 0 20px 20px;
+            overflow: hidden;
+        }
+        .glass-fill::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 0;
+            background: linear-gradient(to top, var(--amber-glow), var(--beer-gold));
+            transition: height 2s ease-in-out;
+        }
+        .beer-tap-container.active .glass-fill::after {
+            height: 90%;
+        }
+        .foam-head {
+            position: absolute;
+            bottom: 90%;
+            left: 0;
+            width: 100%;
+            height: 0;
+            background: var(--foam-white);
+            border-radius: 10px 10px 0 0;
+            transition: height 0.5s ease-in-out 1.8s;
+        }
+        .beer-tap-container.active .foam-head {
+            height: 20px;
+        }
+    </style>
+</head>
+<body class="selection:bg-orange-500 selection:text-black">
+
+    <canvas id="beer-canvas"></canvas>
+    <div class="bubble-bg" id="bubble-container"></div>
+
+    <nav class="fixed w-full z-50 top-0 py-4 px-4 transition-all duration-300 backdrop-blur-md bg-black/30 border-b border-orange-500/30">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-3 group cursor-pointer">
+                <i class="fa-solid fa-beer-mug-empty text-4xl text-beer-gold animate-bounce"></i>
+                <span class="bar-font text-3xl neon-sign">HAPPY HOUR</span>
+            </div>
+            
+            <div class="hidden md:flex gap-10 text-lg font-bold tracking-widest text-amber-glow/80 bar-font">
+                <a href="#about" class="hover:text-beer-gold transition hover:scale-110 hover:text-shadow-glow">THE BAR</a>
+                <a href="#schedule" class="hover:text-beer-gold transition hover:scale-110 hover:text-shadow-glow">SCHEDULE</a>
+                <a href="#community" class="hover:text-beer-gold transition hover:scale-110 hover:text-shadow-glow">THE REGULARS</a>
+            </div>
+
+            <div class="flex gap-4">
+                <a href="https://x.com/HappyHourSolana" target="_blank" class="w-12 h-12 rounded-full glass-card flex items-center justify-center text-xl text-beer-gold hover:bg-beer-gold hover:text-black hover:scale-110 transition p-0">
+                    <i class="fa-brands fa-twitter"></i>
+                </a>
+                <a href="http://t.me/HappyHourSolana" target="_blank" class="w-12 h-12 rounded-full glass-card flex items-center justify-center text-xl text-beer-gold hover:bg-blue-500 hover:text-white hover:scale-110 transition p-0">
+                    <i class="fa-brands fa-telegram"></i>
+                </a>
+                <a href="https://discord.gg/ncNxT2pqZv" target="_blank" class="w-12 h-12 rounded-full glass-card flex items-center justify-center text-xl text-beer-gold hover:bg-indigo-500 hover:text-white hover:scale-110 transition p-0">
+                    <i class="fa-brands fa-discord"></i>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="min-h-screen flex items-center justify-center pt-20 px-4 relative overflow-hidden">
+        
+        <div class="absolute top-1/3 left-10 text-8xl opacity-30 text-beer-gold float-slow" style="animation-delay: 1s;">🍻</div>
+        <div class="absolute bottom-1/4 right-10 text-8xl opacity-30 text-beer-gold float-slow" style="animation-delay: 2s;">🕓</div>
+
+        <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-center relative z-10">
+            
+            <div data-aos="fade-right">
+                <div class="inline-flex items-center gap-2 border border-orange-500/50 bg-orange-900/30 px-4 py-2 rounded-full mb-8">
+                    <span class="w-3 h-3 rounded-full bg-beer-gold animate-pulse"></span>
+                    <span class="text-sm font-bold text-beer-gold tracking-widest bar-font">Happy At ALl Times</span>
+                </div>
+
+                <h1 class="text-7xl md:text-9xl leading-none mb-6 bar-font">
+                    <span class="block text-foam-white">THE ULTIMATE</span>
+                    <span class="neon-sign block">HAPPY HOUR</span>
+                </h1>
+
+                <p class="text-xl text-amber-glow/90 mb-10 border-l-4 border-beer-gold pl-6 leading-relaxed font-semibold max-w-lg">
+                    Markets work better when everyone drinks... er, trades... at the same time. <br>
+                    <span class="text-foam-white">No scattered attention. No randomness. Just coordinated chaos.</span> 🍻
+                </p>
+
+                <!-- <div class="glass-card p-6 mb-10 flex justify-around text-center">
+                    <div>
+                        <span id="days" class="text-4xl bar-font text-beer-gold">00</span>
+                        <div class="text-xs tracking-widest text-amber-glow">DAYS</div>
+                    </div>
+                    <div class="text-4xl bar-font text-beer-gold">:</div>
+                    <div>
+                        <span id="hours" class="text-4xl bar-font text-beer-gold">00</span>
+                        <div class="text-xs tracking-widest text-amber-glow">HOURS</div>
+                    </div>
+                    <div class="text-4xl bar-font text-beer-gold">:</div>
+                    <div>
+                        <span id="minutes" class="text-4xl bar-font text-beer-gold">00</span>
+                        <div class="text-xs tracking-widest text-amber-glow">MINS</div>
+                    </div>
+                    <div class="text-4xl bar-font text-beer-gold">:</div>
+                    <div>
+                        <span id="seconds" class="text-4xl bar-font text-beer-gold">00</span>
+                        <div class="text-xs tracking-widest text-amber-glow">SECS</div>
+                    </div>
+                </div> -->
+
+                <button class="btn-pour" onclick="pourBeer()">
+                    TAP THE KEG & JOIN
+                </button>
+            </div>
+
+            <div class="flex justify-center relative h-[500px]" data-aos="zoom-in">
+                <div class="beer-tap-container" id="hero-tap">
+                    <img src="happy1.png" alt="Happy Hour Tap" class="w-full max-w-md relative z-20 float-slow drop-shadow-[0_0_50px_rgba(255,194,0,0.4)]">
+                    <div class="beer-flow"></div>
+                    <div class="glass-fill">
+                        <div class="foam-head"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section id="about" class="py-24 px-4 relative">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-20" data-aos="fade-up">
+                <h2 class="text-5xl md:text-7xl bar-font mb-4 text-foam-white">THE BAR <span class="text-gold-glow">PHILOSOPHY</span></h2>
+                <p class="text-amber-glow/90 max-w-2xl mx-auto text-xl font-semibold">
+                    "Not every coin needs to die in 24 hours. Long-term > luck-based pumps."
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="glass-card p-8 group text-center" data-aos="fade-up" data-aos-delay="0">
+                    <div class="text-7xl mb-6 group-hover:scale-110 transition duration-300 text-beer-gold">🕰️</div>
+                    <h3 class="text-3xl bar-font mb-4 text-foam-white">Coordinated Trading</h3>
+                    <p class="text-amber-glow/90 leading-relaxed font-semibold">
+                        Built around the idea that markets work better when a lot of people trade at the same time, instead of randomly all day.
+                    </p>
+                </div>
+
+                <div class="glass-card p-8 group text-center border-amber-glow/50" data-aos="fade-up" data-aos-delay="150">
+                    <div class="text-7xl mb-6 group-hover:scale-110 transition duration-300 text-amber-glow">🤝</div>
+                    <h3 class="text-3xl bar-font mb-4 text-beer-gold">Community & Consistency</h3>
+                    <p class="text-amber-glow/90 leading-relaxed font-semibold">
+                        A community that actually wants to show up every day. No scattered attention. Just coordinated trading windows + community participation.
+                    </p>
+                </div>
+
+                <div class="glass-card p-8 group text-center" data-aos="fade-up" data-aos-delay="300">
+                    <div class="text-7xl mb-6 group-hover:scale-110 transition duration-300 text-beer-gold">🍻</div>
+                    <h3 class="text-3xl bar-font mb-4 text-foam-white">The Daily Ritual</h3>
+                    <p class="text-amber-glow/90 leading-relaxed font-semibold">
+                        Bringing everyone together at the same time, every day. It's not just trading, it's Happy Hour.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="schedule" class="py-24 px-4 bg-black/40 relative border-y border-beer-gold/30">
+        <div class="max-w-4xl mx-auto relative z-10 text-center">
+            <div class="mb-16" data-aos="fade-down">
+                <h2 class="text-5xl md:text-7xl bar-font text-foam-white mb-4">THE HAPPY HOUR <span class="neon-sign">MENU</span></h2>
+                <p class="text-beer-gold uppercase tracking-[0.3em] font-bold bar-font">Leading up to launch & beyond</p>
+            </div>
+
+            <div class="space-y-6 text-left inline-block">
+                
+                <div class="glass-card p-6 flex items-center gap-6 group hover:bg-amber-900/20 transition" data-aos="fade-right">
+                    <div class="w-16 h-16 bg-beer-gold/20 rounded-full flex items-center justify-center text-3xl text-beer-gold group-hover:scale-110 transition">🎤</div>
+                    <div>
+                        <h3 class="text-2xl bar-font text-foam-white mb-1">X Spaces</h3>
+                        <p class="text-amber-glow/90 font-semibold">Hosting spaces during key times to build momentum.</p>
+                    </div>
+                </div>
+
+                <div class="glass-card p-6 flex items-center gap-6 group hover:bg-amber-900/20 transition" data-aos="fade-right" data-aos-delay="100">
+                    <div class="w-16 h-16 bg-amber-glow/20 rounded-full flex items-center justify-center text-3xl text-amber-glow group-hover:scale-110 transition">🎁</div>
+                    <div>
+                        <h3 class="text-2xl bar-font text-foam-white mb-1">Community Events & Airdrops</h3>
+                        <p class="text-amber-glow/90 font-semibold">Running competitions to reward the early regulars.</p>
+                    </div>
+                </div>
+
+                <div class="glass-card p-6 flex items-center gap-6 group hover:bg-amber-900/20 transition" data-aos="fade-right" data-aos-delay="200">
+                    <div class="w-16 h-16 bg-beer-gold/20 rounded-full flex items-center justify-center text-3xl text-beer-gold group-hover:scale-110 transition">🍻</div>
+                    <div>
+                        <h3 class="text-2xl bar-font text-foam-white mb-1">Daily Happy Hour Windows</h3>
+                        <p class="text-amber-glow/90 font-semibold">Current Low Fee Hours: TBD. Get ready to coordinate.</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section id="community" class="py-32 px-4 relative overflow-hidden">
+        <div class="max-w-5xl mx-auto text-center relative z-10">
+            <h2 class="text-6xl md:text-8xl bar-font text-foam-white mb-8" data-aos="zoom-in">GET A SEAT AT THE <span class="neon-sign">BAR</span></h2>
+            <p class="text-2xl text-amber-glow/90 mb-12 font-bold max-w-2xl mx-auto" data-aos="fade-up">
+                Building momentum inside the socials first. Get in early before the doors officially open on Dec 18.
+            </p>
+
+            <div class="flex flex-col md:flex-row justify-center gap-8" data-aos="fade-up" data-aos-delay="200">
+                <a href="https://discord.gg/43nmrrFXmE" target="_blank" class="glass-card p-8 flex items-center gap-6 hover:bg-indigo-900/30 group transition text-left">
+                    <i class="fa-brands fa-discord text-5xl text-beer-gold group-hover:scale-110 transition"></i>
+                    <div>
+                        <h3 class="text-3xl bar-font text-foam-white">JOIN DISCORD</h3>
+                        <p class="text-amber-glow/80 font-bold tracking-wider">The VIP Section</p>
+                    </div>
+                </a>
+
+                <a href="http://t.me/HappyHourSolana" target="_blank" class="glass-card p-8 flex items-center gap-6 hover:bg-blue-900/30 group transition text-left">
+                    <i class="fa-brands fa-telegram text-5xl text-beer-gold group-hover:scale-110 transition"></i>
+                    <div>
+                        <h3 class="text-3xl bar-font text-foam-white">JOIN TELEGRAM</h3>
+                        <p class="text-amber-glow/80 font-bold tracking-wider">The Main Bar</p>
+                    </div>
+                </a>
+            </div>
+
+            <p class="text-beer-gold bar-fonttext-xl mt-12 animate-pulse">Dec. 18. Set the reminder. Happy Hour is almost open 🍻</p>
+        </div>
+    </section>
+
+    <footer class="py-12 bg-black/80 border-t border-beer-gold/30 text-center relative z-10">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex items-center justify-center gap-3 mb-8">
+                <i class="fa-solid fa-beer-mug-empty text-3xl text-beer-gold"></i>
+                <span class="bar-font text-2xl text-foam-white">HAPPY HOUR</span>
+            </div>
+            
+            <div class="flex justify-center gap-6 mb-10">
+                <a href="https://x.com/HappyHourSolana" class="w-12 h-12 rounded-full glass-card flex items-center justify-center text-xl text-beer-gold hover:bg-beer-gold hover:text-black hover:scale-110 transition p-0"><i class="fa-brands fa-x-twitter"></i></a>
+                <a href="http://t.me/HappyHourSolana" class="w-12 h-12 rounded-full glass-card flex items-center justify-center text-xl text-beer-gold hover:bg-blue-500 hover:text-white hover:scale-110 transition p-0"><i class="fa-brands fa-telegram"></i></a>
+                <a href="https://discord.gg/ncNxT2pqZv" class="w-12 h-12 rounded-full glass-card flex items-center justify-center text-xl text-beer-gold hover:bg-indigo-500 hover:text-white hover:scale-110 transition p-0"><i class="fa-brands fa-discord"></i></a>
+            </div>
+
+            <p class="text-amber-glow/60 text-sm font-bold bar-font tracking-widest">
+                © 2024 HAPPY HOUR ($HAPPY). DRINK RESPONSIBLY. TRADE COORDINATED.
+            </p>
+        </div>
+    </footer>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        // Init AOS
+        AOS.init({ duration: 1000, offset: 100 });
+
+        // --- 1. LIQUID GOLD CANVAS ANIMATION ---
+        const canvas = document.getElementById('beer-canvas');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        let particles = [];
+
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * width;
+                this.y = height + Math.random() * 100;
+                this.size = Math.random() * 15 + 5;
+                this.speedY = Math.random() * -1.5 - 0.5; // Bubbles float up
+                this.speedX = Math.random() * 0.4 - 0.2;
+                this.color = `rgba(255, ${194 + Math.random()*40}, 0, ${Math.random() * 0.1 + 0.05})`; // Gold/Amber range
+            }
+            update() {
+                this.y += this.speedY;
+                this.x += this.speedX;
+                if (this.y < -50) { // Reset bubble when it goes off screen
+                    this.y = height + 50;
+                    this.x = Math.random() * width;
+                }
+            }
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        for (let i = 0; i < 80; i++) particles.push(new Particle());
+
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+            // Redraw radial gradient background
+            const gradient = ctx.createRadialGradient(width/2, height/2, 0, width/2, height/2, width);
+            gradient.addColorStop(0, '#3d2400');
+            gradient.addColorStop(1, '#000000');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, width, height);
+
+            particles.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+        // --- 2. POUR BEER INTERACTION ---
+        let isPouring = false;
+        function pourBeer() {
+            if (isPouring) return;
+            isPouring = true;
+            const tap = document.getElementById('hero-tap');
+            tap.classList.add('active');
+            
+            // Reset after animation completes
+            setTimeout(() => {
+                tap.classList.remove('active');
+                isPouring = false;
+                // Optional: Scroll to community section after pour
+                document.getElementById('community').scrollIntoView({ behavior: 'smooth' });
+            }, 2500);
+        }
+
+        // --- 3. COUNTDOWN TIMER ---
+        // Set launch date to Dec 18 of the current year
+        const currentYear = new Date().getFullYear();
+        const launchDate = new Date(`December 18, ${currentYear} 00:00:00`).getTime();
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const distance = launchDate - now;
+
+            if (distance < 0) {
+                document.getElementById("days").innerText = "00";
+                document.getElementById("hours").innerText = "00";
+                document.getElementById("minutes").innerText = "00";
+                document.getElementById("seconds").innerText = "00";
+                clearInterval(countdownInterval);
+                return;
+            }
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById("days").innerText = days.toString().padStart(2, '0');
+            document.getElementById("hours").innerText = hours.toString().padStart(2, '0');
+            document.getElementById("minutes").innerText = minutes.toString().padStart(2, '0');
+            document.getElementById("seconds").innerText = seconds.toString().padStart(2, '0');
+        }
+
+        const countdownInterval = setInterval(updateCountdown, 1000);
+        updateCountdown(); // Initial call
+    </script>
+</body>
+</html>
